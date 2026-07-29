@@ -8,20 +8,21 @@ import { CookieConsent } from "@/components/CookieConsent";
 export const metadata: Metadata = {
   metadataBase: new URL(config.site.url),
   title: {
-    default: `${config.site.name} - Gunun One Cikan Giyim Urunleri`,
+    default: `${config.site.name} - Curated Fashion Finds`,
     template: `%s | ${config.site.name}`,
   },
   description:
-    "Trend giyim urunlerini kesfedin. Gunun one cikan parcalarini tek yerde derledik.",
+    "Discover curated clothing, accessories, and standout fashion finds in one place.",
   openGraph: {
     siteName: config.site.name,
     type: "website",
+    locale: "en_US",
   },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr">
+    <html lang="en">
       <head>
         {config.adsense.enabled && (
           <Script

@@ -50,7 +50,7 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
     setGenerating(false);
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      setNotice("Uretim hatasi: " + (err.error ?? "bilinmeyen"));
+      setNotice("Generation error: " + (err.error ?? "unknown"));
     }
     await refresh();
   }
@@ -95,18 +95,18 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
     const result = await res.json().catch(() => ({}));
     setBusyPlatform(null);
     if (result.manual) {
-      setNotice(`${platformLabel(platform)}: API ayarli degil. Asagidan videoyu/gorseli indirip aciklamayi kopyalayarak elle paylasin.`);
+      setNotice(`${platformLabel(platform)}: API is not configured. Download the media below, copy the caption, and post manually.`);
     } else if (result.ok) {
-      setNotice(`${platformLabel(platform)}: yayinlandi ✔`);
+      setNotice(`${platformLabel(platform)}: published ✔`);
     } else {
-      setNotice(`${platformLabel(platform)} hata: ${result.error ?? "bilinmeyen"}`);
+      setNotice(`${platformLabel(platform)} error: ${result.error ?? "unknown"}`);
     }
     await refresh();
   }
 
   function copyCaption(platform: Platform) {
     navigator.clipboard.writeText(captionFor(platform));
-    setNotice(`${platformLabel(platform)} aciklamasi kopyalandi.`);
+    setNotice(`${platformLabel(platform)} caption copied.`);
   }
 
   const asset = data.asset;
@@ -145,19 +145,19 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
             <video src={asset.videoUrl} controls className="w-full rounded-xl bg-black" />
           ) : status === "ready" && !asset?.videoUrl ? (
             <div className="rounded-xl border border-dashed border-amber-300 bg-amber-50 p-4 text-xs text-amber-700">
-              Mock mod: video uretilmedi. Gercek video icin <code>LUMA_API_KEY</code> ekleyin.
+              Mock mode: no video was generated. Add <code>LUMA_API_KEY</code> for real videos.
             </div>
           ) : status === "pending" ? (
             <div className="grid place-items-center rounded-xl bg-neutral-100 p-8 text-sm text-neutral-500">
-              Uretiliyor... (Luma 1-3 dk surebilir)
+              Generating... (Luma may take 1–3 minutes)
             </div>
           ) : status === "failed" ? (
             <div className="rounded-xl border border-dashed border-red-300 bg-red-50 p-4 text-xs text-red-700">
-              {asset?.error ?? "Uretim basarisiz."}
+              {asset?.error ?? "Generation failed."}
             </div>
           ) : (
             <div className="grid place-items-center rounded-xl bg-neutral-100 p-8 text-sm text-neutral-400">
-              Henuz uretilmedi
+              Not generated yet
             </div>
           )}
 
@@ -167,7 +167,7 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
               download
               className="mt-3 block rounded-lg border border-neutral-300 py-2 text-center text-sm font-medium text-neutral-700 hover:bg-neutral-100"
             >
-              Videoyu indir
+              Download video
             </a>
           )}
 
@@ -177,10 +177,10 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
             className="mt-3 w-full rounded-lg bg-brand-600 py-2.5 font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
           >
             {generating || status === "pending"
-              ? "Uretiliyor..."
+              ? "Generating..."
               : hasContent
-                ? "Yeniden Uret"
-                : "Icerik + Video Uret"}
+                ? "Regenerate"
+                : "Generate Content + Video"}
           </button>
           {asset?.generatedPrompt && (
             <details className="mt-3 text-xs text-neutral-500">
@@ -199,8 +199,8 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
 
         {!hasContent && (
           <div className="rounded-2xl border border-dashed border-neutral-300 bg-white p-8 text-center text-neutral-500">
-            Once soldaki <strong>Icerik + Video Uret</strong> butonuna basin. Her platform icin
-            aciklama metinleri ve video burada olusacak.
+            Click <strong>Generate Content + Video</strong> on the left. Captions for each
+            platform and the video will appear here.
           </div>
         )}
 
@@ -214,7 +214,7 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
                 <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-neutral-800">{platformLabel(platform)}</span>
-                    <span className="text-xs text-neutral-400">{isVideo ? "Video" : "Gorsel"}</span>
+                    <span className="text-xs text-neutral-400">{isVideo ? "Video" : "Image"}</span>
                   </div>
                   <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_COLORS[pstatus]}`}>
                     {pstatus}
@@ -233,7 +233,7 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
                     onClick={() => copyCaption(platform)}
                     className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100"
                   >
-                    Aciklamayi kopyala
+                    Copy caption
                   </button>
                   {mediaUrl(platform) && (
                     <a
@@ -243,7 +243,7 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
                       rel="noreferrer"
                       className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100"
                     >
-                      {isVideo ? "Videoyu indir" : "Gorseli indir"}
+                      {isVideo ? "Download video" : "Download image"}
                     </a>
                   )}
                   {pstatus !== "approved" && pstatus !== "published" && (
@@ -251,7 +251,7 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
                       onClick={() => setStatus(platform, "approved")}
                       className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-100"
                     >
-                      Onayla
+                      Approve
                     </button>
                   )}
                   <button
@@ -259,7 +259,7 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
                     disabled={busyPlatform === platform}
                     className="rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
                   >
-                    {busyPlatform === platform ? "Yayinlaniyor..." : "Yayinla"}
+                    {busyPlatform === platform ? "Publishing..." : "Publish"}
                   </button>
                   {post?.externalUrl && (
                     <a
@@ -268,7 +268,7 @@ export function ProductStudio({ initial }: { initial: Bundle }) {
                       rel="noreferrer"
                       className="rounded-lg px-3 py-1.5 text-xs font-medium text-brand-600 hover:underline"
                     >
-                      Gonderiyi gor ↗
+                      View post ↗
                     </a>
                   )}
                 </div>

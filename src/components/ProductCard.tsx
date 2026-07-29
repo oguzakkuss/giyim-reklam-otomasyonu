@@ -4,7 +4,7 @@ import type { Product } from "@/lib/db/types";
 export function ProductCard({ product }: { product: Product }) {
   return (
     <Link
-      href={`/urun/${product.slug}`}
+      href={`/product/${product.slug}`}
       className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition hover:-translate-y-0.5 hover:shadow-lg"
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-neutral-100">
@@ -22,10 +22,10 @@ export function ProductCard({ product }: { product: Product }) {
           {product.price ? (
             <span className="text-base font-bold text-brand-600">{product.price}</span>
           ) : (
-            <span className="text-sm text-neutral-400">Fiyati gor</span>
+            <span className="text-sm text-neutral-400">See price</span>
           )}
           <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
-            Incele
+            View
           </span>
         </div>
       </div>

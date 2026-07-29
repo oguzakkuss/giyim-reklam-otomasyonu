@@ -1,5 +1,5 @@
-// Yerel JSON store'a ornek urunler ekler (gorseller Unsplash).
-// Kullanim: node scripts/seed.mjs
+// Adds sample products to the local JSON store (images from Unsplash).
+// Usage: node scripts/seed.mjs
 import { promises as fs } from "fs";
 import path from "path";
 
@@ -15,40 +15,40 @@ function slugify(s) {
 
 const demo = [
   {
-    title: "Oversize Keten Gomlek - Bej",
-    price: "449,90 TL",
+    title: "Relaxed Linen Shirt - Light Blue",
+    price: "$39.99",
     imageUrl: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&q=80",
-    description: "Yazlik keten kumasi ve rahat kesimiyle gunluk kombinlerin vazgecilmezi.",
+    description: "A relaxed button-down with an easy silhouette for casual everyday outfits.",
   },
   {
-    title: "Yuksek Bel Wide Leg Pantolon",
-    price: "599,00 TL",
+    title: "High-Waisted Wide-Leg Pants",
+    price: "$49.99",
     imageUrl: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&q=80",
-    description: "Bol paca kesim ve yuksek bel ile hem sik hem konforlu bir siluet.",
+    description: "A wide-leg silhouette with a high rise for polished, comfortable styling.",
   },
   {
-    title: "Triko Kazak - Kirik Beyaz",
-    price: "379,90 TL",
+    title: "Graphic Knit Top - Ivory",
+    price: "$34.99",
     imageUrl: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80",
-    description: "Yumusak dokulu triko kazak, soguk gunlerde sicak ve sik bir secim.",
+    description: "A soft, versatile layer designed for easy everyday combinations.",
   },
   {
-    title: "Deri Ceket - Siyah",
-    price: "1.299,00 TL",
+    title: "Classic Faux-Leather Jacket - Black",
+    price: "$89.99",
     imageUrl: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&q=80",
-    description: "Zamansiz deri ceket, her gardiroba karakter katan bir parca.",
+    description: "A timeless moto-inspired layer that adds an edge to everyday outfits.",
   },
   {
-    title: "Midi Sifon Elbise - Cicekli",
-    price: "699,90 TL",
+    title: "Floral Midi Dress",
+    price: "$59.99",
     imageUrl: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=80",
-    description: "Akici sifon kumas ve zarif cicek deseniyle bahar-yaz favorisi.",
+    description: "A flowing floral midi silhouette suited to spring and summer occasions.",
   },
   {
-    title: "Spor Ayakkabi - Retro",
-    price: "899,00 TL",
+    title: "Retro Everyday Sneakers",
+    price: "$69.99",
     imageUrl: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80",
-    description: "Retro tasarim ve gunluk konfor bir arada. Her kombine uyum saglar.",
+    description: "A retro-inspired sneaker designed to complement casual daily outfits.",
   },
 ];
 
@@ -58,8 +58,8 @@ const products = demo.map((d, i) => {
   return {
     id: `seed-${i + 1}`,
     slug,
-    amazonUrl: `https://www.amazon.com.tr/dp/DEMO${i + 1}`,
-    affiliateUrl: `https://www.amazon.com.tr/dp/DEMO${i + 1}?tag=demo-21`,
+    amazonUrl: `https://www.amazon.com/dp/DEMO${i + 1}`,
+    affiliateUrl: `https://www.amazon.com/dp/DEMO${i + 1}?tag=demo-20`,
     title: d.title,
     description: d.description,
     imageUrl: d.imageUrl,
@@ -72,4 +72,4 @@ const db = { products, assets: [], captions: [], posts: [], clicks: [] };
 
 await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
 await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2), "utf8");
-console.log(`${products.length} ornek urun eklendi -> ${DB_PATH}`);
+console.log(`${products.length} sample products added -> ${DB_PATH}`);

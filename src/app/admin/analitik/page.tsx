@@ -5,7 +5,7 @@ import { config } from "@/lib/config";
 export const dynamic = "force-dynamic";
 
 function normalizeReferrer(ref: string | null): string {
-  if (!ref) return "dogrudan / bilinmiyor";
+  if (!ref) return "direct / unknown";
   const r = ref.toLowerCase();
   if (r.includes("tiktok")) return "TikTok";
   if (r.includes("instagram")) return "Instagram";
@@ -43,23 +43,25 @@ export default async function AnalyticsPage() {
 
   return (
     <AdminShell>
-      <h1 className="mb-1 text-2xl font-bold text-neutral-900">Analitik</h1>
+      <h1 className="mb-1 text-2xl font-bold text-neutral-900">Analytics</h1>
       <p className="mb-6 text-sm text-neutral-500">
-        Affiliate tiklama takibi (kendi logumuz).{" "}
-        {config.analytics.gaId ? "GA4 aktif." : "GA4 pasif (NEXT_PUBLIC_GA_MEASUREMENT_ID ekleyin)."}
+        Affiliate click tracking (our own logs).{" "}
+        {config.analytics.gaId
+          ? "GA4 is active."
+          : "GA4 is inactive (add NEXT_PUBLIC_GA_MEASUREMENT_ID)."}
       </p>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Toplam tiklama" value={total} />
-        <StatCard label="Urun sayisi" value={products.length} />
-        <StatCard label="Trafik kaynagi" value={sources.length} />
+        <StatCard label="Total clicks" value={total} />
+        <StatCard label="Products" value={products.length} />
+        <StatCard label="Traffic sources" value={sources.length} />
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-neutral-200 bg-white p-5">
-          <h2 className="mb-4 font-semibold text-neutral-800">En cok tiklanan urunler</h2>
+          <h2 className="mb-4 font-semibold text-neutral-800">Top clicked products</h2>
           {topProducts.length === 0 ? (
-            <p className="text-sm text-neutral-500">Henuz tiklama yok.</p>
+            <p className="text-sm text-neutral-500">No clicks yet.</p>
           ) : (
             <ul className="space-y-3">
               {topProducts.map(({ product, count }) => (
@@ -68,7 +70,7 @@ export default async function AnalyticsPage() {
                   <img src={product!.imageUrl} alt="" className="h-10 w-10 rounded-lg object-cover" />
                   <span className="line-clamp-1 flex-1 text-sm text-neutral-700">{product!.title}</span>
                   <span className="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700">
-                    {count} tiklama
+                    {count} clicks
                   </span>
                 </li>
               ))}
@@ -77,9 +79,9 @@ export default async function AnalyticsPage() {
         </div>
 
         <div className="rounded-2xl border border-neutral-200 bg-white p-5">
-          <h2 className="mb-4 font-semibold text-neutral-800">Trafik kaynaklari (platform)</h2>
+          <h2 className="mb-4 font-semibold text-neutral-800">Traffic sources</h2>
           {sources.length === 0 ? (
-            <p className="text-sm text-neutral-500">Henuz veri yok.</p>
+            <p className="text-sm text-neutral-500">No data yet.</p>
           ) : (
             <ul className="space-y-3">
               {sources.map(([source, count]) => (

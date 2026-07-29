@@ -21,10 +21,10 @@ export default async function ProductStudioPage({ params }: { params: { id: stri
     <AdminShell>
       <div className="mb-6 flex items-center gap-3 text-sm text-neutral-500">
         <Link href="/admin" className="hover:text-brand-600">
-          Panel
+          Dashboard
         </Link>
         <span>/</span>
-        <span className="text-neutral-800">Studyo</span>
+        <span className="text-neutral-800">Studio</span>
       </div>
       <ProductStudio initial={{ product, asset, captions, posts }} />
     </AdminShell>

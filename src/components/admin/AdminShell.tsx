@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const NAV = [
-  { href: "/admin", label: "Panel" },
-  { href: "/admin/urun-ekle", label: "Urun Ekle" },
-  { href: "/admin/analitik", label: "Analitik" },
+  { href: "/admin", label: "Dashboard" },
+  { href: "/admin/urun-ekle", label: "Add Product" },
+  { href: "/admin/analitik", label: "Analytics" },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
@@ -25,7 +25,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <div className="flex items-center gap-6">
             <Link href="/admin" className="flex items-center gap-2 font-bold">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand-600 text-white">M</span>
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand-600 text-white">A</span>
               Admin
             </Link>
             <nav className="flex gap-1">
@@ -47,13 +47,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex items-center gap-3">
             <Link href="/" target="_blank" className="text-sm text-neutral-500 hover:text-brand-600">
-              Siteyi gor ↗
+              View site ↗
             </Link>
             <button
               onClick={logout}
               className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-100"
             >
-              Cikis
+              Log out
             </button>
           </div>
         </div>

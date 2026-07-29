@@ -7,21 +7,21 @@ export interface GeneratedContent {
 }
 
 function productUrl(product: Product): string {
-  return `${config.site.url}/urun/${product.slug}`;
+  return `${config.site.url}/product/${product.slug}`;
 }
 
 /** LLM yoksa kullanilacak sablon tabanli (mock) icerik. */
 function templateContent(product: Product): GeneratedContent {
   const link = productUrl(product);
-  const name = product.title || "Bu sik parca";
-  const base = `${name} 😍 Gardirobunu yenilemenin tam zamani!`;
+  const name = product.title || "This standout piece";
+  const base = `${name} 😍 A fresh find for your wardrobe.`;
 
   const captions: Record<Platform, string> = {
-    tiktok: `${base}\n\n👉 Detaylar profildeki linkte\n${link}\n#moda #giyim #trend #stil #kombin`,
-    instagram: `${base}\n\nBegendin mi? Linke goz at 👀\n${link}\n#moda #outfit #style #fashion #giyim`,
-    facebook: `${base}\n\nUrune ulasmak icin: ${link}`,
-    youtube: `${name} | Kisa Tanitim\n\nDetaylar ve satin alma: ${link}\n#shorts #moda #giyim`,
-    pinterest: `${name} - ilham veren kombin fikirleri. Detaylar icin tikla 👉 ${link}`,
+    tiktok: `${base}\n\n👉 See the full details:\n${link}\n#fashion #style #outfit #fashionfinds #wardrobe`,
+    instagram: `${base}\n\nWould you wear it? Take a closer look 👀\n${link}\n#fashion #outfit #style #fashionfinds #shopping`,
+    facebook: `${base}\n\nView the product details: ${link}`,
+    youtube: `${name} | Fashion Find\n\nProduct details: ${link}\n#shorts #fashion #style`,
+    pinterest: `${name} — a stylish addition to your wardrobe. See the details 👉 ${link}`,
   };
 
   const videoPrompt =
@@ -37,23 +37,23 @@ function templateContent(product: Product): GeneratedContent {
 async function llmContent(product: Product): Promise<GeneratedContent> {
   const link = productUrl(product);
   const sys =
-    "Sen bir sosyal medya ve kisa video reklam metni uzmanisin. Verilen giyim urunu icin " +
-    "her platforma uygun, albenili, kisa aciklamalar ve gorselden videoya (image-to-video) " +
-    "uygun bir ingilizce video prompt uretirsin. Yanit SADECE gecerli JSON olmali.";
+    "You are a US fashion social media copywriter. Create concise, engaging, honest " +
+    "English captions tailored to each platform and an English image-to-video prompt. " +
+    "Do not invent product claims, discounts, materials, or features. Return ONLY valid JSON.";
 
-  const user = `Urun basligi: ${product.title}
-Urun aciklamasi: ${product.description || "(yok)"}
-Site urun linki (her aciklamanin sonuna dogal sekilde eklenmeli): ${link}
+  const user = `Product title: ${product.title}
+Product description: ${product.description || "(none)"}
+Product page URL (include naturally in every caption): ${link}
 
-Su JSON semasinda yanit ver:
+Return this JSON schema:
 {
-  "videoPrompt": "image-to-video icin ingilizce, 9:16 dikey, sinematik moda reklami prompt'u (metin overlay yok)",
+  "videoPrompt": "English image-to-video prompt for a vertical 9:16 cinematic fashion showcase, with no text overlays",
   "captions": {
-    "tiktok": "TR aciklama + emoji + 4-5 hashtag + link",
-    "instagram": "TR aciklama + emoji + 4-5 hashtag + link",
-    "facebook": "TR kisa aciklama + link",
-    "youtube": "TR baslik/aciklama + #shorts + link",
-    "pinterest": "TR ilham verici kisa aciklama + link"
+    "tiktok": "US English caption + emoji + 4-5 relevant hashtags + link",
+    "instagram": "US English caption + emoji + 4-5 relevant hashtags + link",
+    "facebook": "Short US English caption + link",
+    "youtube": "US English title/description + #shorts + link",
+    "pinterest": "Short, inspirational US English description + link"
   }
 }`;
 

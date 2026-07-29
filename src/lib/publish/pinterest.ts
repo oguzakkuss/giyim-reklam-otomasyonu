@@ -18,7 +18,7 @@ export const pinterestAdapter: PublishAdapter = {
           board_id: config.publish.pinterest.boardId,
           title: product.title.slice(0, 100),
           description: caption,
-          link: `${config.site.url}/urun/${product.slug}`,
+          link: `${config.site.url}/product/${product.slug}`,
           media_source: { source_type: "image_url", url: imageUrl },
         }),
       });

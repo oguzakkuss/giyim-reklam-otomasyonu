@@ -23,7 +23,7 @@ export default function LoginPage() {
       router.push("/admin");
       router.refresh();
     } else {
-      setError("Sifre hatali. Tekrar deneyin.");
+      setError("Incorrect password. Please try again.");
     }
   }
 
@@ -31,10 +31,10 @@ export default function LoginPage() {
     <div className="grid min-h-screen place-items-center px-4">
       <form onSubmit={submit} className="w-full max-w-sm rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm">
         <div className="mb-6 flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-600 text-lg font-black text-white">M</span>
-          <span className="text-lg font-bold">Admin Girisi</span>
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-brand-600 text-lg font-black text-white">A</span>
+          <span className="text-lg font-bold">Admin Login</span>
         </div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">Sifre</label>
+        <label className="mb-1 block text-sm font-medium text-neutral-700">Password</label>
         <input
           type="password"
           value={password}
@@ -49,10 +49,10 @@ export default function LoginPage() {
           disabled={loading}
           className="mt-5 w-full rounded-lg bg-brand-600 py-2.5 font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
         >
-          {loading ? "Giris yapiliyor..." : "Giris Yap"}
+          {loading ? "Signing in..." : "Sign in"}
         </button>
         <p className="mt-4 text-center text-xs text-neutral-400">
-          ADMIN_PASSWORD bos ise gelistirme modu aciktir.
+          If ADMIN_PASSWORD is empty, development mode stays open.
         </p>
       </form>
     </div>

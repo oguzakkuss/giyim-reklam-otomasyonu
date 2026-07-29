@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const STORAGE_KEY = "cookie-consent-v1";
 
-/** KVKK/GDPR cerez onay banneri. Onay verilene kadar gosterilir. */
+/** Cookie consent banner shown until the visitor makes a choice. */
 export function CookieConsent() {
   const [visible, setVisible] = useState(false);
 
@@ -32,10 +32,10 @@ export function CookieConsent() {
     <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:p-4">
       <div className="container-max flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-white p-4 shadow-lg sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-neutral-600">
-          Deneyiminizi iyilestirmek ve reklam/analitik amaciyla cerezler kullaniyoruz.
-          Detaylar icin{" "}
-          <Link href="/cerez-politikasi" className="font-medium text-brand-600 underline">
-            Cerez Politikasi
+          We use cookies to improve your experience and support analytics and advertising.
+          Read our{" "}
+          <Link href="/cookie-policy" className="font-medium text-brand-600 underline">
+            Cookie Policy
           </Link>
           .
         </p>
@@ -44,13 +44,13 @@ export function CookieConsent() {
             onClick={() => decide("rejected")}
             className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100"
           >
-            Reddet
+            Reject
           </button>
           <button
             onClick={() => decide("accepted")}
             className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700"
           >
-            Kabul Et
+            Accept
           </button>
         </div>
       </div>

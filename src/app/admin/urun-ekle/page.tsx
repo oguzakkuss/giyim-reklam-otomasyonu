@@ -33,11 +33,11 @@ export default function AddProductPage() {
       if (data.affiliateUrl) setAffiliateUrl(data.affiliateUrl);
       setMsg(
         data.title
-          ? "Veri PA-API'den cekildi."
-          : "PA-API ayarli degil. Baslik/gorseli elle girin. (Affiliate link olusturuldu.)",
+          ? "Product details loaded from PA-API."
+          : "PA-API is not configured. Enter title/image manually. Affiliate link was created.",
       );
     } catch {
-      setMsg("Link okunamadi, alanlari elle doldurun.");
+      setMsg("Could not read the link. Fill the fields manually.");
     }
     setLooking(false);
   }
@@ -64,7 +64,7 @@ export default function AddProductPage() {
       router.push(`/admin/urun/${product.id}`);
     } else {
       const err = await res.json().catch(() => ({}));
-      setMsg("Kaydedilemedi: " + JSON.stringify(err.error ?? "hata"));
+      setMsg("Could not save: " + JSON.stringify(err.error ?? "error"));
     }
   }
 
@@ -73,17 +73,17 @@ export default function AddProductPage() {
 
   return (
     <AdminShell>
-      <h1 className="mb-6 text-2xl font-bold text-neutral-900">Urun Ekle</h1>
+      <h1 className="mb-6 text-2xl font-bold text-neutral-900">Add Product</h1>
 
       <form onSubmit={save} className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
           <div className="rounded-2xl border border-neutral-200 bg-white p-5">
-            <label className="mb-1 block text-sm font-medium text-neutral-700">Amazon urun linki</label>
+            <label className="mb-1 block text-sm font-medium text-neutral-700">Amazon product URL</label>
             <div className="flex gap-2">
               <input
                 value={amazonUrl}
                 onChange={(e) => setAmazonUrl(e.target.value)}
-                placeholder="https://www.amazon.com.tr/dp/XXXXXXXXXX"
+                placeholder="https://www.amazon.com/dp/XXXXXXXXXX"
                 className={inputCls}
                 required
               />
@@ -93,37 +93,46 @@ export default function AddProductPage() {
                 disabled={looking}
                 className="shrink-0 rounded-lg border border-brand-600 px-4 text-sm font-semibold text-brand-600 hover:bg-brand-50 disabled:opacity-50"
               >
-                {looking ? "..." : "Getir"}
+                {looking ? "..." : "Fetch"}
               </button>
             </div>
             {msg && <p className="mt-2 text-xs text-neutral-500">{msg}</p>}
           </div>
 
           <div className="rounded-2xl border border-neutral-200 bg-white p-5">
-            <label className="mb-1 block text-sm font-medium text-neutral-700">Baslik</label>
+            <label className="mb-1 block text-sm font-medium text-neutral-700">Title</label>
             <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputCls} required />
 
-            <label className="mb-1 mt-4 block text-sm font-medium text-neutral-700">Aciklama (SEO/AdSense icin ozgun metin)</label>
+            <label className="mb-1 mt-4 block text-sm font-medium text-neutral-700">
+              Description (write an original 2–3 sentence summary for AdSense/SEO)
+            </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={4}
               className={inputCls}
-              placeholder="Urun hakkinda 2-3 cumle ozgun aciklama..."
+              placeholder="Write an original product summary in English..."
             />
 
             <div className="mt-4 grid grid-cols-2 gap-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-700">Gorsel URL</label>
+                <label className="mb-1 block text-sm font-medium text-neutral-700">Image URL</label>
                 <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className={inputCls} required />
               </div>
               <div>
-                <label className="mb-1 block text-sm font-medium text-neutral-700">Fiyat (opsiyonel)</label>
-                <input value={price} onChange={(e) => setPrice(e.target.value)} className={inputCls} placeholder="399,90 TL" />
+                <label className="mb-1 block text-sm font-medium text-neutral-700">Price (optional)</label>
+                <input
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className={inputCls}
+                  placeholder="$39.99"
+                />
               </div>
             </div>
 
-            <label className="mb-1 mt-4 block text-sm font-medium text-neutral-700">Affiliate URL (bos ise otomatik uretilir)</label>
+            <label className="mb-1 mt-4 block text-sm font-medium text-neutral-700">
+              Affiliate URL (auto-generated if left blank)
+            </label>
             <input value={affiliateUrl} onChange={(e) => setAffiliateUrl(e.target.value)} className={inputCls} />
           </div>
 
@@ -132,22 +141,22 @@ export default function AddProductPage() {
             disabled={saving}
             className="rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
           >
-            {saving ? "Kaydediliyor..." : "Kaydet ve Studyoya Git"}
+            {saving ? "Saving..." : "Save and open Studio"}
           </button>
         </div>
 
         <div className="lg:col-span-1">
           <div className="rounded-2xl border border-neutral-200 bg-white p-5">
-            <div className="mb-2 text-sm font-medium text-neutral-700">Onizleme</div>
+            <div className="mb-2 text-sm font-medium text-neutral-700">Preview</div>
             <div className="aspect-[3/4] overflow-hidden rounded-xl bg-neutral-100">
               {imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={imageUrl} alt="" className="h-full w-full object-cover" />
               ) : (
-                <div className="grid h-full place-items-center text-xs text-neutral-400">Gorsel yok</div>
+                <div className="grid h-full place-items-center text-xs text-neutral-400">No image</div>
               )}
             </div>
-            <div className="mt-3 line-clamp-2 text-sm font-semibold">{title || "Baslik"}</div>
+            <div className="mt-3 line-clamp-2 text-sm font-semibold">{title || "Title"}</div>
             {price && <div className="mt-1 font-bold text-brand-600">{price}</div>}
           </div>
         </div>

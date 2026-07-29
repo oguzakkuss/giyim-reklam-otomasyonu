@@ -12,7 +12,7 @@ function env(key: string): string | undefined {
 export const config = {
   site: {
     url: env("NEXT_PUBLIC_SITE_URL") ?? "http://localhost:3000",
-    name: env("NEXT_PUBLIC_SITE_NAME") ?? "ModaVitrin",
+    name: env("NEXT_PUBLIC_SITE_NAME") ?? "Avelon",
   },
   admin: {
     password: env("ADMIN_PASSWORD"),
