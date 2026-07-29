@@ -3,16 +3,13 @@ import { LocalRepository } from "./local";
 import { SupabaseRepository } from "./supabase";
 import type { Repository } from "./types";
 
-let instance: Repository | null = null;
-
 /**
- * Aktif veri deposunu dondurur.
- * Supabase env'leri tanimliysa Supabase, degilse yerel JSON store kullanilir.
+ * Returns the active data store.
+ * Always resolve fresh based on current env (no sticky singleton) so a cold
+ * start cannot lock the process into the empty local JSON store.
  */
 export function getRepository(): Repository {
-  if (instance) return instance;
-  instance = config.supabase.enabled ? new SupabaseRepository() : new LocalRepository();
-  return instance;
+  return config.supabase.enabled ? new SupabaseRepository() : new LocalRepository();
 }
 
 export function usingSupabase(): boolean {

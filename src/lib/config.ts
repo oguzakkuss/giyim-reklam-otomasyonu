@@ -19,12 +19,20 @@ export const config = {
     sessionSecret: env("ADMIN_SESSION_SECRET") ?? "dev-insecure-secret-change-me",
   },
   supabase: {
-    url: env("NEXT_PUBLIC_SUPABASE_URL"),
+    // Prefer non-NEXT_PUBLIC server env so the URL is not baked empty at build time.
+    get url(): string | undefined {
+      return env("SUPABASE_URL") ?? env("NEXT_PUBLIC_SUPABASE_URL");
+    },
     anonKey: env("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
-    serviceRoleKey: env("SUPABASE_SERVICE_ROLE_KEY"),
+    get serviceRoleKey(): string | undefined {
+      return env("SUPABASE_SERVICE_ROLE_KEY");
+    },
     bucket: env("SUPABASE_STORAGE_BUCKET") ?? "media",
     get enabled(): boolean {
-      return Boolean(env("NEXT_PUBLIC_SUPABASE_URL") && env("SUPABASE_SERVICE_ROLE_KEY"));
+      return Boolean(
+        (env("SUPABASE_URL") ?? env("NEXT_PUBLIC_SUPABASE_URL")) &&
+          env("SUPABASE_SERVICE_ROLE_KEY"),
+      );
     },
   },
   amazon: {
