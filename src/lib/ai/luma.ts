@@ -48,6 +48,7 @@ export async function generateVideo(prompt: string, imageUrl: string): Promise<V
     },
     body: JSON.stringify({
       prompt,
+      model: "ray-2",
       aspect_ratio: "9:16",
       keyframes: { frame0: { type: "image", url: imageUrl } },
     }),
