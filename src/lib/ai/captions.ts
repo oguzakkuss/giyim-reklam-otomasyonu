@@ -57,27 +57,33 @@ Return this JSON schema:
   }
 }`;
 
+  const payload: Record<string, unknown> = {
+    model: config.llm.model,
+    messages: [
+      { role: "system", content: sys },
+      { role: "user", content: user },
+    ],
+    temperature: 0.8,
+  };
+  // Some OpenAI-compatible providers (e.g. NVIDIA NIM) reject response_format.
+  if (!config.llm.baseUrl.includes("nvidia.com")) {
+    payload.response_format = { type: "json_object" };
+  }
+
   const res = await fetch(`${config.llm.baseUrl}/chat/completions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${config.llm.apiKey}`,
+      Accept: "application/json",
     },
-    body: JSON.stringify({
-      model: config.llm.model,
-      messages: [
-        { role: "system", content: sys },
-        { role: "user", content: user },
-      ],
-      response_format: { type: "json_object" },
-      temperature: 0.8,
-    }),
+    body: JSON.stringify(payload),
   });
 
   if (!res.ok) throw new Error(`LLM hata: ${res.status} ${await res.text()}`);
   const data = await res.json();
   const raw = data?.choices?.[0]?.message?.content ?? "{}";
-  const parsed = JSON.parse(raw);
+  const parsed = parseJsonContent(raw);
 
   const captions = {} as Record<Platform, string>;
   for (const p of [...VIDEO_PLATFORMS, ...IMAGE_PLATFORMS]) {
@@ -87,6 +93,20 @@ Return this JSON schema:
     videoPrompt: parsed?.videoPrompt ?? templateContent(product).videoPrompt,
     captions,
   };
+}
+
+function parseJsonContent(raw: string): Record<string, unknown> {
+  const trimmed = raw.trim();
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fenced?.[1]) return JSON.parse(fenced[1].trim());
+    const start = trimmed.indexOf("{");
+    const end = trimmed.lastIndexOf("}");
+    if (start >= 0 && end > start) return JSON.parse(trimmed.slice(start, end + 1));
+    throw new Error("LLM JSON parse failed");
+  }
 }
 
 export async function generateContent(product: Product): Promise<GeneratedContent> {
