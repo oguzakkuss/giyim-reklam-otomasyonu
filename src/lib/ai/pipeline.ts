@@ -1,12 +1,13 @@
 import { getRepository } from "@/lib/db";
 import { ALL_PLATFORMS } from "@/lib/db/types";
+import { persistRemoteMedia } from "@/lib/storage";
 import { generateContent } from "./captions";
 import { generateVideo } from "./luma";
 
 /**
  * Icerik uretim pipeline'i:
  *  1) Metin (video prompt + platform aciklamalari) uret ve kaydet
- *  2) Luma ile videoyu uret ve kaydet
+ *  2) Luma ile videoyu uret, mumkunse Storage'a kopyala, kaydet
  *  3) Her platform icin taslak post olustur
  *
  * Inngest etkinse arka planda, degilse generate API'sinde inline calisir.
@@ -29,8 +30,21 @@ export async function runGenerationPipeline(productId: string): Promise<void> {
 
     // 2) Video uretimi (Luma)
     const video = await generateVideo(content.videoPrompt, product.imageUrl);
+    let videoUrl = video.videoUrl;
+    if (videoUrl) {
+      try {
+        const permanent = await persistRemoteMedia(
+          videoUrl,
+          `videos/${productId}-${Date.now()}.mp4`,
+        );
+        if (permanent) videoUrl = permanent;
+      } catch (err) {
+        console.error("Video Storage'a kopyalanamadi, Luma URL kullanilacak:", err);
+      }
+    }
+
     await repo.upsertAsset(productId, {
-      videoUrl: video.videoUrl,
+      videoUrl,
       status: "ready",
       error: video.mock ? "MOCK: LUMA_API_KEY tanimli degil, gercek video uretilmedi." : null,
     });
