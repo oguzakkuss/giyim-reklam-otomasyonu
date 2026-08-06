@@ -85,12 +85,20 @@ Return this JSON schema:
   const raw = data?.choices?.[0]?.message?.content ?? "{}";
   const parsed = parseJsonContent(raw);
 
+  const fallback = templateContent(product);
+  const parsedCaptions =
+    parsed.captions && typeof parsed.captions === "object"
+      ? (parsed.captions as Partial<Record<Platform, string>>)
+      : {};
   const captions = {} as Record<Platform, string>;
   for (const p of [...VIDEO_PLATFORMS, ...IMAGE_PLATFORMS]) {
-    captions[p] = parsed?.captions?.[p] ?? templateContent(product).captions[p];
+    captions[p] = parsedCaptions[p] ?? fallback.captions[p];
   }
   return {
-    videoPrompt: parsed?.videoPrompt ?? templateContent(product).videoPrompt,
+    videoPrompt:
+      typeof parsed.videoPrompt === "string" && parsed.videoPrompt.trim()
+        ? parsed.videoPrompt
+        : fallback.videoPrompt,
     captions,
   };
 }
